@@ -10,14 +10,14 @@ export default function DashboardPage() {
         }} />
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
           <div data-reveal>
-            <span className="section-label">لوحة الأثر</span>
+            <span className="section-label">لوحة المتابعة</span>
             <h1 className="page-title" style={{ marginTop: 'var(--sp-4)' }}>
-              لوحة حية تقرأ
+              متابعة التبرعات
               <br />
-              <span className="gradient-text">البيانات الفعلية</span>
+              <span className="gradient-text">بشكل مباشر</span>
             </h1>
             <p className="page-subtitle">
-              تقرأ أحدث التبرعات وطلبات الاستلام ورسائل التواصل من Firestore مباشرة، أو من التخزين المحلي في الوضع التجريبي.
+              جميع التبرعات وفرق الاستلام ورسائل التواصل في مكان واحد — مع إمكانية الاتصال المباشر.
             </p>
           </div>
         </div>

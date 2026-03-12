@@ -12,12 +12,12 @@ export default function RequestPage() {
           <div data-reveal>
             <span className="section-label">فرق الاستلام</span>
             <h1 className="page-title" style={{ marginTop: 'var(--sp-4)' }}>
-              سجل فريقك
+              سجّل فريقك
               <br />
               <span className="gradient-text">لاستلام الفائض</span>
             </h1>
             <p className="page-subtitle">
-              للمتطوعين والجهات الشريكة. يمكن ربط هذه البيانات بلوحة إدارة متقدمة ونظام صلاحيات كامل.
+              للمتطوعين والجهات الشريكة الراغبين في استلام فائض الطعام وتوزيعه على المحتاجين.
             </p>
           </div>
         </div>
@@ -29,7 +29,10 @@ export default function RequestPage() {
 
             {/* Sidebar */}
             <div className="info-sidebar" data-reveal>
-              <div className="info-card" style={{ background: 'linear-gradient(135deg, rgba(34,197,94,0.08), rgba(34,197,94,0.04))', borderColor: 'rgba(34,197,94,0.2)' }}>
+              <div className="info-card" style={{
+                background: 'linear-gradient(135deg, rgba(34,197,94,0.08), rgba(34,197,94,0.04))',
+                borderColor: 'rgba(34,197,94,0.2)'
+              }}>
                 <h3 style={{ color: 'var(--clr-accent)' }}>🚀 كيف تنضم للفريق؟</h3>
                 <p>سجّل بياناتك والمنطقة التي تغطيها، وسيصلك إشعار عند توفر فائض قريب منك.</p>
               </div>
@@ -44,6 +47,13 @@ export default function RequestPage() {
               <div className="info-card">
                 <h3>📦 القدرة الاستيعابية</h3>
                 <p>أدخل الحد الأقصى للوجبات التي يمكن لفريقك استلامها وتوزيعها يومياً.</p>
+              </div>
+              <div className="info-card" style={{
+                background: 'linear-gradient(135deg, rgba(37,211,102,0.08), rgba(34,197,94,0.04))',
+                borderColor: 'rgba(37,211,102,0.2)'
+              }}>
+                <h3 style={{ color: '#25d366' }}>💬 إشعار واتساب</h3>
+                <p>بعد التسجيل ستصلك رسالة واتساب تأكيدية وستُبلَّغ فوراً عند توفر طعام في منطقتك.</p>
               </div>
             </div>
 

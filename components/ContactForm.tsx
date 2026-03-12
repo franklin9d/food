@@ -22,17 +22,13 @@ export function ContactForm() {
     setLoading(true);
     setStatus('');
     try {
-      const mode = await submitContactMessage(form);
+      await submitContactMessage(form);
       setStatusType('success');
-      setStatus(
-        mode === 'firebase'
-          ? '✅ تم إرسال الرسالة وحفظها داخل Firestore بنجاح.'
-          : '✅ تم حفظ الرسالة محليًا في الوضع التجريبي.',
-      );
+      setStatus('✅ تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.');
       setForm(initialState);
     } catch {
       setStatusType('error');
-      setStatus('❌ تعذر إرسال الرسالة. تأكد من إعدادات Firestore ثم أعد المحاولة.');
+      setStatus('❌ تعذر إرسال الرسالة. تأكد من بياناتك وأعد المحاولة.');
     } finally {
       setLoading(false);
     }
