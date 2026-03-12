@@ -3,64 +3,7 @@
 import dynamic from 'next/dynamic';
 import { FormEvent, useState } from 'react';
 import { submitDonation } from '@/lib/storage';
-
-// Food type to image mapping
-const foodImages: Record<string, string> = {
-  // Iraqi foods
-  'دولمة': 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Dolma.jpg/400px-Dolma.jpg',
-  'كباب': 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Iraqi_kebab.jpg/400px-Iraqi_kebab.jpg',
-  'قيمة': 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Qeema.jpg/400px-Qeema.jpg',
-  'باچة': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Bacha.jpg/400px-Bacha.jpg',
-  'مسقوف': 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Masgouf.jpg/400px-Masgouf.jpg',
-  'تشريب': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Tashreeb.jpg/400px-Tashreeb.jpg',
-  'عقيلي': 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Dolma.jpg/400px-Dolma.jpg',
-  // Fast foods
-  'كنتاكي': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Fried_chicken_KFC.jpg/400px-Fried_chicken_KFC.jpg',
-  'بيتزا': 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Eq_it-na_pizza-margherita_sep2005_sml.jpg/400px-Eq_it-na_pizza-margherita_sep2005_sml.jpg',
-  'برغر': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Cheeseburger.jpg/400px-Cheeseburger.jpg',
-  'شاورما': 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Shawarma_closeup.jpg/400px-Shawarma_closeup.jpg',
-  'صاج': 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Dolma.jpg/400px-Dolma.jpg',
-  'كص': 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Qeema.jpg/400px-Qeema.jpg',
-};
-
-const foodKeywords: Record<string, string> = {
-  'كنتاكي': '🍗',
-  'بيتزا': '🍕',
-  'برغر': '🍔',
-  'شاورما': '🌮',
-  'صاج': '🥙',
-  'كص': '🍖',
-  'دولمة': '🫙',
-  'كباب': '🍢',
-  'قيمة': '🥘',
-  'باچة': '🍲',
-  'مسقوف': '🐟',
-  'تشريب': '🍲',
-  'خبز': '🫓',
-  'رز': '🍚',
-  'دجاج': '🍗',
-  'لحم': '🥩',
-  'سمك': '🐟',
-  'حلويات': '🍮',
-  'كيك': '🎂',
-  'وجبات': '🍱',
-};
-
-const getFoodEmoji = (foodType: string): string => {
-  const lower = foodType.toLowerCase();
-  for (const [key, emoji] of Object.entries(foodKeywords)) {
-    if (lower.includes(key)) return emoji;
-  }
-  return '🍽️';
-};
-
-const getFoodImage = (foodType: string): string | null => {
-  const lower = foodType;
-  for (const [key, url] of Object.entries(foodImages)) {
-    if (lower.includes(key)) return url;
-  }
-  return null;
-};
+import { getFoodImage, getFoodEmoji } from '@/lib/foodImages';
 
 const LocationPicker = dynamic(
   () => import('./LocationPicker').then((m) => m.LocationPicker),
@@ -113,7 +56,7 @@ export function DonateForm() {
   const [statusType, setStatusType] = useState<'success' | 'error'>('success');
   const [loading, setLoading] = useState(false);
   const [foodEmoji, setFoodEmoji] = useState('🍽️');
-  const [foodImageUrl, setFoodImageUrl] = useState<string | null>(null);
+  const [foodImageUrl, setFoodImageUrl] = useState<string>('');
 
   const handleFoodTypeChange = (value: string) => {
     setForm({ ...form, foodType: value });
@@ -157,7 +100,7 @@ export function DonateForm() {
       
       setForm(initialState);
       setFoodEmoji('🍽️');
-      setFoodImageUrl(null);
+      setFoodImageUrl('');
     } catch {
       setStatusType('error');
       setStatus('❌ حدث خطأ أثناء الإرسال. تأكد من البيانات وأعد المحاولة.');
@@ -258,7 +201,7 @@ export function DonateForm() {
                   src={foodImageUrl}
                   alt={form.foodType}
                   style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 8 }}
-                  onError={() => setFoodImageUrl(null)}
+                  onError={() => setFoodImageUrl('')}
                 />
               ) : (
                 <span>{foodEmoji}</span>
