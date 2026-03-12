@@ -78,8 +78,13 @@ const pushLocal = (key: string, payload: Record<string, string>) => {
   window.dispatchEvent(new Event('storage-sync'));
 };
 
-const mapCollection = <T extends Record<string, unknown>>(docs: Array<{ id: string; [key: string]: unknown }>): T[] =>
-  docs.map((doc) => ({ ...doc, createdAt: toIsoDate(doc.createdAt) } as T));
+const mapCollection = <T extends { id: string; createdAt?: string }>(
+  docs: Array<{ id: string; [key: string]: unknown }>,
+): T[] =>
+  docs.map((doc) => {
+    const mapped = { ...doc, createdAt: toIsoDate(doc.createdAt) };
+    return mapped as T;
+  });
 
 export const submitDonation = async (payload: DonationFormData) => {
   if (firebaseEnabled && db) {
