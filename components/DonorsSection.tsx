@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import { Trophy, Clock, ArrowLeft } from 'lucide-react';
 
@@ -10,10 +12,10 @@ const topDonors = [
 ];
 
 const recentActivity = [
-  { time: 'منذ 12 دقيقة', emoji: '🥙', donor: 'مطعم ألف ليلة', amount: '30 وجبة', status: 'جاهز', statusClass: 'status-done' },
-  { time: 'منذ 28 دقيقة', emoji: '🍞', donor: 'مخبز الفرح', amount: '60 قطعة خبز', status: 'قيد التوزيع', statusClass: 'status-active' },
-  { time: 'منذ 45 دقيقة', emoji: '🍱', donor: 'كافتيريا الجامعة', amount: '25 وجبة', status: 'تم التسليم', statusClass: 'status-done' },
-  { time: 'منذ ساعة', emoji: '🥗', donor: 'مطعم زهرة البستان', amount: '18 وجبة', status: 'تم التسليم', statusClass: 'status-done' },
+  { time: 'منذ 12 دقيقة', emoji: '🥙', donor: 'مطعم ألف ليلة', amount: '30 وجبة', status: 'جاهز' },
+  { time: 'منذ 28 دقيقة', emoji: '🍞', donor: 'مخبز الفرح', amount: '60 قطعة خبز', status: 'قيد التوزيع' },
+  { time: 'منذ 45 دقيقة', emoji: '🍱', donor: 'كافتيريا الجامعة', amount: '25 وجبة', status: 'تم التسليم' },
+  { time: 'منذ ساعة', emoji: '🥗', donor: 'مطعم زهرة البستان', amount: '18 وجبة', status: 'تم التسليم' },
 ];
 
 export function DonorsSection() {
@@ -22,17 +24,16 @@ export function DonorsSection() {
       <div className="container">
 
         <div style={{ textAlign: 'center', marginBottom: 'var(--sp-14)' }} data-reveal>
-          <div className="section-label">
+          <div className="section-label" style={{ justifyContent: 'center' }}>
             <Trophy size={14} />
             المتبرعون الأبطال
           </div>
-          <h2 className="section-title section-title-center">
+          <h2 className="section-title" style={{ marginTop: 'var(--sp-4)' }}>
             شركاؤنا في صناعة
             <br />
             <span className="gradient-text">الأثر المجتمعي</span>
           </h2>
-          <div className="glow-divider" />
-          <p className="section-desc section-desc-center">
+          <p style={{ fontSize: 'var(--fs-md)', color: 'var(--clr-text-2)', marginTop: 'var(--sp-4)' }}>
             هؤلاء الشركاء يقودون التغيير يومًا بيوم
           </p>
         </div>
@@ -80,24 +81,9 @@ export function DonorsSection() {
               {recentActivity.map((a, i) => (
                 <div
                   key={i}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 'var(--sp-4)',
-                    padding: 'var(--sp-4) var(--sp-6)',
-                    borderBottom: i < recentActivity.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none',
-                    transition: 'background var(--dur-fast)',
-                  }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(255,255,255,0.02)')}
-                  onMouseLeave={(e) => (e.currentTarget.style.background = '')}
+                  className="activity-row"
                 >
-                  <div style={{
-                    width: 44, height: 44,
-                    borderRadius: 'var(--r-md)',
-                    background: 'rgba(249,115,22,0.08)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: 22, flexShrink: 0,
-                  }}>
+                  <div className="activity-icon">
                     {a.emoji}
                   </div>
                   <div style={{ flex: 1 }}>
@@ -109,7 +95,7 @@ export function DonorsSection() {
                     </span>
                   </div>
                   <div style={{ textAlign: 'end' }}>
-                    <span className={`status-badge ${a.statusClass}`} style={{ display: 'block', marginBottom: 4 }}>
+                    <span className="live-item-badge" style={{ display: 'block', marginBottom: 4 }}>
                       {a.status}
                     </span>
                     <span style={{ fontSize: 'var(--fs-xs)', color: 'var(--clr-text-muted)' }}>

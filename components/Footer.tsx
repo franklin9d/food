@@ -101,12 +101,7 @@ export function Footer() {
             <div>
               <div className="footer-contact-item">
                 <Mail size={16} />
-                <a
-                  href="mailto:vip.frml@gmail.com"
-                  style={{ fontSize: 'var(--fs-sm)', color: 'var(--clr-text-3)', transition: 'color var(--dur-fast)' }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--clr-primary-2)')}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--clr-text-3)')}
-                >
+                <a href="mailto:vip.frml@gmail.com" className="footer-contact-link">
                   vip.frml@gmail.com
                 </a>
               </div>
@@ -116,9 +111,7 @@ export function Footer() {
                   href="https://instagram.com/f3u"
                   target="_blank"
                   rel="noopener noreferrer"
-                  style={{ fontSize: 'var(--fs-sm)', color: 'var(--clr-text-3)', transition: 'color var(--dur-fast)' }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--clr-primary-2)')}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--clr-text-3)')}
+                  className="footer-contact-link"
                 >
                   @f3u
                 </a>
