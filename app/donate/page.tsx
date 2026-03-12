@@ -17,7 +17,7 @@ export default function DonatePage() {
               <span className="gradient-text">خلال دقيقة واحدة</span>
             </h1>
             <p className="page-subtitle">
-              النموذج يعمل الآن بالكامل. عند ربط Firebase سيتم إرسال كل التبرعات مباشرة إلى Firestore.
+              سجّل بيانات مطعمك وحدد موقعه على الخريطة — سيتواصل معك فريق الاستلام فوراً.
             </p>
           </div>
         </div>
@@ -31,19 +31,26 @@ export default function DonatePage() {
             <div className="info-sidebar" data-reveal>
               <div className="info-card">
                 <h3>📌 ماذا تحتاج؟</h3>
-                <p>اسم الجهة، نوع الطعام، الكمية التقريبية، وقت الاستلام، والمنطقة.</p>
+                <p>اسم المطعم، نوع الطعام، الكمية، وقت الاستلام، وتحديد الموقع على الخريطة.</p>
               </div>
               <div className="info-card">
                 <h3>⚡ كيف يعمل؟</h3>
-                <p>بعد الإرسال يظهر طلبك مباشرة للمتطوعين القريبين منك على لوحة الأثر.</p>
+                <p>بعد الإرسال يظهر طلبك مباشرة لفرق الاستلام القريبة منك.</p>
               </div>
               <div className="info-card">
-                <h3>🔒 بياناتك آمنة</h3>
-                <p>كل التبرعات محفوظة بأمان في <code>donations</code> داخل Firestore.</p>
+                <h3>📍 الخريطة التفاعلية</h3>
+                <p>اضغط &quot;تحديد موقعي&quot; أو انقر على الخريطة لتحديد موقع مطعمك بدقة.</p>
               </div>
-              <div className="info-card" style={{ background: 'linear-gradient(135deg, rgba(249,115,22,0.08), rgba(34,197,94,0.06))', borderColor: 'rgba(249,115,22,0.2)' }}>
-                <h3 style={{ color: 'var(--clr-primary-2)' }}>💡 نصيحة</h3>
-                <p>أضف ملاحظات السلامة والتعبئة لضمان الاستلام السريع والآمن.</p>
+              <div className="info-card">
+                <h3>💬 إشعار واتساب</h3>
+                <p>بعد التسجيل ستصلك رسالة واتساب تأكيدية فيها كل تفاصيل التبرع.</p>
+              </div>
+              <div className="info-card" style={{
+                background: 'linear-gradient(135deg, rgba(249,115,22,0.08), rgba(34,197,94,0.06))',
+                borderColor: 'rgba(249,115,22,0.2)'
+              }}>
+                <h3 style={{ color: 'var(--clr-primary-2)' }}>🍽️ صورة الأكلة</h3>
+                <p>اكتب نوع الطعام (كنتاكي، صاج، كباب...) وستظهر صورته تلقائياً!</p>
               </div>
             </div>
 

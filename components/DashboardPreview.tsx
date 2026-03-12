@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { loadDashboardData, subscribeDashboardData, type ContactRecord, type DonationRecord, type PickupRecord } from '@/lib/storage';
 
 type DashboardState = {
@@ -20,28 +20,73 @@ const formatDate = (value?: string) => {
   }).format(date);
 };
 
+const callPhone = (phone: string) => {
+  if (!phone) return;
+  const clean = phone.replace(/\s+/g, '');
+  window.location.href = `tel:${clean}`;
+};
+
+const openWhatsApp = (phone: string) => {
+  if (!phone) return;
+  const clean = phone.replace(/[^\d+]/g, '').replace(/^\+/, '');
+  window.open(`https://wa.me/${clean}`, '_blank');
+};
+
 export function DashboardPreview() {
   const [data, setData] = useState<DashboardState>({ donations: [], pickups: [], messages: [], source: 'demo' });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const dataLoadedRef = useRef(false);
 
   useEffect(() => {
     let mounted = true;
 
+    // Load initial data immediately (sync from localStorage for demo)
+    const initialData = {
+      donations: JSON.parse(localStorage.getItem('food-rescue-donations') || '[]') as DonationRecord[],
+      pickups: JSON.parse(localStorage.getItem('food-rescue-pickups') || '[]') as PickupRecord[],
+      messages: JSON.parse(localStorage.getItem('food-rescue-messages') || '[]') as ContactRecord[],
+      source: 'demo' as const,
+    };
+    
+    if (mounted && !dataLoadedRef.current) {
+      setData(initialData);
+      setLoading(false);
+      dataLoadedRef.current = true;
+    }
+
+    // Then try Firebase
     loadDashboardData()
       .then((result) => {
-        if (mounted) { setData(result); setLoading(false); }
+        if (mounted) {
+          setData(result);
+          setLoading(false);
+          dataLoadedRef.current = true;
+        }
       })
       .catch(() => {
-        if (mounted) { setError('تعذر تحميل البيانات الحالية.'); setLoading(false); }
+        if (mounted) {
+          setLoading(false);
+        }
       });
 
     const unsubscribe = subscribeDashboardData(
-      (result) => { if (mounted) { setData(result); setLoading(false); } },
-      (message) => setError(message),
+      (result) => {
+        if (mounted) {
+          setData(result);
+          setLoading(false);
+          dataLoadedRef.current = true;
+        }
+      },
+      (message) => {
+        if (mounted) setError(message);
+      },
     );
 
-    return () => { mounted = false; unsubscribe(); };
+    return () => {
+      mounted = false;
+      unsubscribe();
+    };
   }, []);
 
   const metrics = useMemo(() => {
@@ -51,22 +96,26 @@ export function DashboardPreview() {
       {
         title: 'التبرعات المسجلة',
         value: String(data.donations.length),
-        note: data.source === 'firebase' ? 'قراءة مباشرة من Firestore' : 'قراءة من الوضع التجريبي',
+        note: data.source === 'firebase' ? 'قراءة مباشرة من Firestore' : 'قراءة من التخزين المحلي',
+        icon: '🍱',
       },
       {
         title: 'فرق الاستلام',
         value: String(data.pickups.length),
-        note: 'جهات ومتطوعون جاهزون للاستلام',
+        note: 'جهات ومتطوعون جاهزون',
+        icon: '🚚',
       },
       {
         title: 'رسائل التواصل',
         value: String(data.messages.length),
         note: 'استفسارات وشراكات مقترحة',
+        icon: '💬',
       },
       {
         title: 'الحالات الجديدة',
         value: String(newDonations),
         note: completed > 0 ? `${completed} حالة مكتملة` : 'جاهزة للمتابعة',
+        icon: '🆕',
       },
     ];
   }, [data]);
@@ -87,6 +136,7 @@ export function DashboardPreview() {
       <div className="metric-grid">
         {metrics.map((metric, i) => (
           <article className="metric-card" key={metric.title} data-reveal data-reveal-delay={String(i + 1)}>
+            <span style={{ fontSize: 24, marginBottom: 4, display: 'block' }}>{metric.icon}</span>
             <span>{metric.title}</span>
             <strong>{metric.value}</strong>
             <small>{metric.note}</small>
@@ -95,7 +145,18 @@ export function DashboardPreview() {
       </div>
 
       {error && <p className="error-state">{error}</p>}
-      {loading && <p className="loading-state">⏳ جاري تحميل البيانات...</p>}
+      {loading && (
+        <div className="loading-state" style={{ display: 'flex', alignItems: 'center', gap: 10, justifyContent: 'center', padding: '20px 0' }}>
+          <span style={{
+            width: 20, height: 20, borderRadius: '50%',
+            border: '2px solid rgba(249,115,22,0.3)',
+            borderTopColor: 'var(--clr-primary-2)',
+            animation: 'spin-slow 0.7s linear infinite',
+            display: 'inline-block'
+          }} />
+          جاري تحميل البيانات...
+        </div>
+      )}
 
       <div className="table-stack">
 
@@ -115,6 +176,7 @@ export function DashboardPreview() {
                   <th>المسؤول</th>
                   <th>النوع</th>
                   <th>المنطقة</th>
+                  <th>الهاتف</th>
                   <th>الوقت</th>
                 </tr>
               </thead>
@@ -123,16 +185,68 @@ export function DashboardPreview() {
                   <tr key={row.id}>
                     <td style={{ fontWeight: 700, color: 'var(--clr-text)' }}>{row.organization}</td>
                     <td>{row.contact}</td>
-                    <td>{row.foodType}</td>
                     <td>
-                      <span style={{ background: 'rgba(249,115,22,0.06)', border: '1px solid rgba(249,115,22,0.12)', padding: '3px 8px', borderRadius: 999, fontSize: 12 }}>
+                      <span style={{
+                        background: 'rgba(249,115,22,0.06)',
+                        border: '1px solid rgba(249,115,22,0.12)',
+                        padding: '3px 8px',
+                        borderRadius: 999,
+                        fontSize: 12
+                      }}>
+                        {row.foodType}
+                      </span>
+                    </td>
+                    <td>
+                      <span style={{
+                        background: 'rgba(249,115,22,0.06)',
+                        border: '1px solid rgba(249,115,22,0.12)',
+                        padding: '3px 8px',
+                        borderRadius: 999,
+                        fontSize: 12
+                      }}>
                         {row.area}
                       </span>
+                    </td>
+                    <td>
+                      {row.phone ? (
+                        <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+                          <button
+                            onClick={() => callPhone(row.phone)}
+                            title="اتصال"
+                            style={{
+                              background: 'rgba(34,197,94,0.1)',
+                              border: '1px solid rgba(34,197,94,0.25)',
+                              borderRadius: 6,
+                              padding: '3px 8px',
+                              cursor: 'pointer',
+                              fontSize: 13,
+                              color: 'var(--clr-accent)',
+                              display: 'flex', alignItems: 'center', gap: 4
+                            }}
+                          >
+                            📞 {row.phone}
+                          </button>
+                          <button
+                            onClick={() => openWhatsApp(row.phone)}
+                            title="واتساب"
+                            style={{
+                              background: 'rgba(37,211,102,0.1)',
+                              border: '1px solid rgba(37,211,102,0.25)',
+                              borderRadius: 6,
+                              padding: '3px 7px',
+                              cursor: 'pointer',
+                              fontSize: 13,
+                            }}
+                          >
+                            💬
+                          </button>
+                        </div>
+                      ) : '—'}
                     </td>
                     <td>{formatDate(row.createdAt)}</td>
                   </tr>
                 )) : (
-                  <tr><td colSpan={5} className="empty-cell">لا توجد تبرعات بعد. ابدأ بإضافة تبرع!</td></tr>
+                  <tr><td colSpan={6} className="empty-cell">لا توجد تبرعات بعد. ابدأ بإضافة تبرع!</td></tr>
                 )}
               </tbody>
             </table>
@@ -155,6 +269,7 @@ export function DashboardPreview() {
                   <th>الجهة</th>
                   <th>المنطقة</th>
                   <th>القدرة</th>
+                  <th>الهاتف</th>
                   <th>التوفر</th>
                 </tr>
               </thead>
@@ -164,15 +279,57 @@ export function DashboardPreview() {
                     <td style={{ fontWeight: 700, color: 'var(--clr-text)' }}>{row.name}</td>
                     <td>{row.organization}</td>
                     <td>
-                      <span style={{ background: 'rgba(34,197,94,0.06)', border: '1px solid rgba(34,197,94,0.12)', padding: '3px 8px', borderRadius: 999, fontSize: 12 }}>
+                      <span style={{
+                        background: 'rgba(34,197,94,0.06)',
+                        border: '1px solid rgba(34,197,94,0.12)',
+                        padding: '3px 8px',
+                        borderRadius: 999,
+                        fontSize: 12
+                      }}>
                         {row.area}
                       </span>
                     </td>
                     <td>{row.capacity}</td>
+                    <td>
+                      {row.phone ? (
+                        <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+                          <button
+                            onClick={() => callPhone(row.phone)}
+                            title="اتصال"
+                            style={{
+                              background: 'rgba(34,197,94,0.1)',
+                              border: '1px solid rgba(34,197,94,0.25)',
+                              borderRadius: 6,
+                              padding: '3px 8px',
+                              cursor: 'pointer',
+                              fontSize: 13,
+                              color: 'var(--clr-accent)',
+                              display: 'flex', alignItems: 'center', gap: 4
+                            }}
+                          >
+                            📞 {row.phone}
+                          </button>
+                          <button
+                            onClick={() => openWhatsApp(row.phone)}
+                            title="واتساب"
+                            style={{
+                              background: 'rgba(37,211,102,0.1)',
+                              border: '1px solid rgba(37,211,102,0.25)',
+                              borderRadius: 6,
+                              padding: '3px 7px',
+                              cursor: 'pointer',
+                              fontSize: 13,
+                            }}
+                          >
+                            💬
+                          </button>
+                        </div>
+                      ) : '—'}
+                    </td>
                     <td>{row.availability}</td>
                   </tr>
                 )) : (
-                  <tr><td colSpan={5} className="empty-cell">لا توجد طلبات استلام بعد.</td></tr>
+                  <tr><td colSpan={6} className="empty-cell">لا توجد طلبات استلام بعد.</td></tr>
                 )}
               </tbody>
             </table>
@@ -203,7 +360,42 @@ export function DashboardPreview() {
                   <tr key={row.id}>
                     <td style={{ fontWeight: 700, color: 'var(--clr-text)' }}>{row.name}</td>
                     <td>{row.organization || '—'}</td>
-                    <td>{row.phone}</td>
+                    <td>
+                      {row.phone ? (
+                        <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+                          <button
+                            onClick={() => callPhone(row.phone)}
+                            title="اتصال"
+                            style={{
+                              background: 'rgba(34,197,94,0.1)',
+                              border: '1px solid rgba(34,197,94,0.25)',
+                              borderRadius: 6,
+                              padding: '3px 8px',
+                              cursor: 'pointer',
+                              fontSize: 13,
+                              color: 'var(--clr-accent)',
+                              display: 'flex', alignItems: 'center', gap: 4
+                            }}
+                          >
+                            📞 {row.phone}
+                          </button>
+                          <button
+                            onClick={() => openWhatsApp(row.phone)}
+                            title="واتساب"
+                            style={{
+                              background: 'rgba(37,211,102,0.1)',
+                              border: '1px solid rgba(37,211,102,0.25)',
+                              borderRadius: 6,
+                              padding: '3px 7px',
+                              cursor: 'pointer',
+                              fontSize: 13,
+                            }}
+                          >
+                            💬
+                          </button>
+                        </div>
+                      ) : '—'}
+                    </td>
                     <td>{row.email}</td>
                     <td className="message-cell">{row.message}</td>
                   </tr>
