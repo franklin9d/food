@@ -30,32 +30,18 @@ export function DashboardPreview() {
 
     loadDashboardData()
       .then((result) => {
-        if (mounted) {
-          setData(result);
-          setLoading(false);
-        }
+        if (mounted) { setData(result); setLoading(false); }
       })
       .catch(() => {
-        if (mounted) {
-          setError('تعذر تحميل البيانات الحالية.');
-          setLoading(false);
-        }
+        if (mounted) { setError('تعذر تحميل البيانات الحالية.'); setLoading(false); }
       });
 
     const unsubscribe = subscribeDashboardData(
-      (result) => {
-        if (mounted) {
-          setData(result);
-          setLoading(false);
-        }
-      },
+      (result) => { if (mounted) { setData(result); setLoading(false); } },
       (message) => setError(message),
     );
 
-    return () => {
-      mounted = false;
-      unsubscribe();
-    };
+    return () => { mounted = false; unsubscribe(); };
   }, []);
 
   const metrics = useMemo(() => {
@@ -86,17 +72,21 @@ export function DashboardPreview() {
   }, [data]);
 
   return (
-    <div className="dashboardShell">
-      <div className="dashboardMetaBar">
-        <span className={`sourceBadge ${data.source === 'firebase' ? 'live' : ''}`}>
+    <div className="dashboard-shell">
+
+      {/* Meta bar */}
+      <div className="dashboard-meta-bar">
+        <span className={`source-badge ${data.source === 'firebase' ? 'live' : ''}`}>
+          <span className="dot" />
           {data.source === 'firebase' ? 'Live · Firestore' : 'Demo · Local'}
         </span>
         <p>اللوحة تعرض أحدث التبرعات وطلبات الاستلام ورسائل التواصل بشكل مباشر.</p>
       </div>
 
-      <div className="metricGrid">
-        {metrics.map((metric) => (
-          <article className="metricCard" key={metric.title}>
+      {/* Metric cards */}
+      <div className="metric-grid">
+        {metrics.map((metric, i) => (
+          <article className="metric-card" key={metric.title} data-reveal data-reveal-delay={String(i + 1)}>
             <span>{metric.title}</span>
             <strong>{metric.value}</strong>
             <small>{metric.note}</small>
@@ -104,18 +94,20 @@ export function DashboardPreview() {
         ))}
       </div>
 
-      {error && <p className="formStatus errorState">{error}</p>}
-      {loading && <p className="dashboardLoading">جاري تحميل البيانات...</p>}
+      {error && <p className="error-state">{error}</p>}
+      {loading && <p className="loading-state">⏳ جاري تحميل البيانات...</p>}
 
-      <div className="tableStack">
-        <div className="tableCard">
-          <div className="tableHeader">
+      <div className="table-stack">
+
+        {/* Donations table */}
+        <div className="table-card" data-reveal>
+          <div className="table-header">
             <div>
               <span>آخر التبرعات</span>
               <h3>سجل الجهات المانحة</h3>
             </div>
           </div>
-          <div className="responsiveTable">
+          <div className="responsive-table">
             <table>
               <thead>
                 <tr>
@@ -129,28 +121,33 @@ export function DashboardPreview() {
               <tbody>
                 {data.donations.length ? data.donations.map((row) => (
                   <tr key={row.id}>
-                    <td>{row.organization}</td>
+                    <td style={{ fontWeight: 700, color: 'var(--clr-text)' }}>{row.organization}</td>
                     <td>{row.contact}</td>
                     <td>{row.foodType}</td>
-                    <td>{row.area}</td>
+                    <td>
+                      <span style={{ background: 'rgba(249,115,22,0.06)', border: '1px solid rgba(249,115,22,0.12)', padding: '3px 8px', borderRadius: 999, fontSize: 12 }}>
+                        {row.area}
+                      </span>
+                    </td>
                     <td>{formatDate(row.createdAt)}</td>
                   </tr>
                 )) : (
-                  <tr><td colSpan={5} className="emptyCell">لا توجد تبرعات بعد.</td></tr>
+                  <tr><td colSpan={5} className="empty-cell">لا توجد تبرعات بعد. ابدأ بإضافة تبرع!</td></tr>
                 )}
               </tbody>
             </table>
           </div>
         </div>
 
-        <div className="tableCard">
-          <div className="tableHeader">
+        {/* Pickups table */}
+        <div className="table-card" data-reveal>
+          <div className="table-header">
             <div>
               <span>فرق الاستلام</span>
               <h3>الفرق والمبادرات</h3>
             </div>
           </div>
-          <div className="responsiveTable">
+          <div className="responsive-table">
             <table>
               <thead>
                 <tr>
@@ -164,28 +161,33 @@ export function DashboardPreview() {
               <tbody>
                 {data.pickups.length ? data.pickups.map((row) => (
                   <tr key={row.id}>
-                    <td>{row.name}</td>
+                    <td style={{ fontWeight: 700, color: 'var(--clr-text)' }}>{row.name}</td>
                     <td>{row.organization}</td>
-                    <td>{row.area}</td>
+                    <td>
+                      <span style={{ background: 'rgba(34,197,94,0.06)', border: '1px solid rgba(34,197,94,0.12)', padding: '3px 8px', borderRadius: 999, fontSize: 12 }}>
+                        {row.area}
+                      </span>
+                    </td>
                     <td>{row.capacity}</td>
                     <td>{row.availability}</td>
                   </tr>
                 )) : (
-                  <tr><td colSpan={5} className="emptyCell">لا توجد طلبات استلام بعد.</td></tr>
+                  <tr><td colSpan={5} className="empty-cell">لا توجد طلبات استلام بعد.</td></tr>
                 )}
               </tbody>
             </table>
           </div>
         </div>
 
-        <div className="tableCard">
-          <div className="tableHeader">
+        {/* Messages table */}
+        <div className="table-card" data-reveal>
+          <div className="table-header">
             <div>
               <span>رسائل التواصل</span>
               <h3>رسائل محفوظة في النظام</h3>
             </div>
           </div>
-          <div className="responsiveTable">
+          <div className="responsive-table">
             <table>
               <thead>
                 <tr>
@@ -199,19 +201,20 @@ export function DashboardPreview() {
               <tbody>
                 {data.messages.length ? data.messages.map((row) => (
                   <tr key={row.id}>
-                    <td>{row.name}</td>
-                    <td>{row.organization || '-'}</td>
+                    <td style={{ fontWeight: 700, color: 'var(--clr-text)' }}>{row.name}</td>
+                    <td>{row.organization || '—'}</td>
                     <td>{row.phone}</td>
                     <td>{row.email}</td>
-                    <td className="messageCell">{row.message}</td>
+                    <td className="message-cell">{row.message}</td>
                   </tr>
                 )) : (
-                  <tr><td colSpan={5} className="emptyCell">لا توجد رسائل بعد.</td></tr>
+                  <tr><td colSpan={5} className="empty-cell">لا توجد رسائل بعد.</td></tr>
                 )}
               </tbody>
             </table>
           </div>
         </div>
+
       </div>
     </div>
   );

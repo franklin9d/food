@@ -1,23 +1,60 @@
-import Image from 'next/image';
 import { DonateForm } from '@/components/DonateForm';
 
 export default function DonatePage() {
   return (
-    <section className="sectionSpacing">
-      <div className="container pageHero splitSection">
-        <div>
-          <span className="eyebrow">تبرع بالفائض</span>
-          <h1 className="pageTitle">أضف فائض الطعام خلال دقيقة واحدة</h1>
-          <p className="pageText">
-            هذه الصفحة تعمل الآن بالكامل. عند ربط Firebase سيتم إرسال كل التبرعات مباشرة إلى Firestore، وبدون الربط
-            ستبقى شغالة في وضع تجريبي محلي.
-          </p>
-          <DonateForm />
-        </div>
-        <div className="imageFrame compactFrame">
-          <Image src="/images/donation-form-visual.svg" alt="Donation visual" width={580} height={500} />
+    <>
+      <div className="page-hero">
+        <div style={{
+          position: 'absolute', inset: 0, pointerEvents: 'none',
+          background: 'radial-gradient(ellipse at 30% 0%, rgba(249,115,22,0.12) 0%, transparent 60%)',
+        }} />
+        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
+          <div data-reveal>
+            <span className="section-label">تبرع بالفائض</span>
+            <h1 className="page-title" style={{ marginTop: 'var(--sp-4)' }}>
+              أضف فائض الطعام
+              <br />
+              <span className="gradient-text">خلال دقيقة واحدة</span>
+            </h1>
+            <p className="page-subtitle">
+              النموذج يعمل الآن بالكامل. عند ربط Firebase سيتم إرسال كل التبرعات مباشرة إلى Firestore.
+            </p>
+          </div>
         </div>
       </div>
-    </section>
+
+      <div className="page-content">
+        <div className="container">
+          <div className="page-split">
+
+            {/* Sidebar info */}
+            <div className="info-sidebar" data-reveal>
+              <div className="info-card">
+                <h3>📌 ماذا تحتاج؟</h3>
+                <p>اسم الجهة، نوع الطعام، الكمية التقريبية، وقت الاستلام، والمنطقة.</p>
+              </div>
+              <div className="info-card">
+                <h3>⚡ كيف يعمل؟</h3>
+                <p>بعد الإرسال يظهر طلبك مباشرة للمتطوعين القريبين منك على لوحة الأثر.</p>
+              </div>
+              <div className="info-card">
+                <h3>🔒 بياناتك آمنة</h3>
+                <p>كل التبرعات محفوظة بأمان في <code>donations</code> داخل Firestore.</p>
+              </div>
+              <div className="info-card" style={{ background: 'linear-gradient(135deg, rgba(249,115,22,0.08), rgba(34,197,94,0.06))', borderColor: 'rgba(249,115,22,0.2)' }}>
+                <h3 style={{ color: 'var(--clr-primary-2)' }}>💡 نصيحة</h3>
+                <p>أضف ملاحظات السلامة والتعبئة لضمان الاستلام السريع والآمن.</p>
+              </div>
+            </div>
+
+            {/* Form */}
+            <div data-reveal data-reveal-delay="2">
+              <DonateForm />
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
