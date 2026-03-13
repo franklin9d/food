@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Mail, Instagram, MapPin } from 'lucide-react';
+import { Mail, Instagram, MapPin, Phone } from 'lucide-react';
 
 const quickLinks = [
   { href: '/donate', label: 'تبرع بالفائض' },
@@ -100,6 +100,12 @@ export function Footer() {
             <h4>تواصل معنا</h4>
             <div>
               <div className="footer-contact-item">
+                <Phone size={16} />
+                <a href="tel:07752550255" className="footer-contact-link" style={{ direction: 'ltr', display: 'inline-block' }}>
+                  07752550255
+                </a>
+              </div>
+              <div className="footer-contact-item">
                 <Mail size={16} />
                 <a href="mailto:vip.frml@gmail.com" className="footer-contact-link">
                   vip.frml@gmail.com
@@ -145,8 +151,8 @@ export function Footer() {
 
         {/* Bottom bar */}
         <div className="footer-bottom">
-          <p>
-            © {new Date().getFullYear()} Food Rescue Hub — جميع الحقوق محفوظة
+          <p style={{ fontSize: 'var(--fs-xs)', color: 'var(--clr-text-muted)' }}>
+            © {new Date().getFullYear()} Food Rescue Hub
           </p>
           <div className="footer-bottom-links">
             <Link href="/about">عن المشروع</Link>

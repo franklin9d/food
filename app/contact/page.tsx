@@ -42,8 +42,8 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <p style={{ fontSize: 'var(--fs-xs)', color: 'var(--clr-text-muted)', margin: 0 }}>البريد الإلكتروني</p>
-                      <a href="mailto:hello@foodrescuehub.app" style={{ fontSize: 'var(--fs-sm)', color: 'var(--clr-text)', display: 'block', fontWeight: 700, textDecoration: 'none' }}>
-                        hello@foodrescuehub.app
+                      <a href="mailto:vip.frml@gmail.com" style={{ fontSize: 'var(--fs-sm)', color: 'var(--clr-text)', display: 'block', fontWeight: 700, textDecoration: 'none' }}>
+                        vip.frml@gmail.com
                       </a>
                     </div>
                   </div>
@@ -53,12 +53,15 @@ export default function ContactPage() {
                       background: 'rgba(37,211,102,0.1)',
                       display: 'grid', placeItems: 'center', fontSize: '1rem', flexShrink: 0,
                     }}>
-                      💬
+                      📞
                     </div>
                     <div>
-                      <p style={{ fontSize: 'var(--fs-xs)', color: 'var(--clr-text-muted)', margin: 0 }}>واتساب</p>
-                      <a href="https://wa.me/9647700000000" target="_blank" rel="noopener noreferrer" style={{ fontSize: 'var(--fs-sm)', color: '#25d366', display: 'block', fontWeight: 700, textDecoration: 'none' }}>
-                        +964 770 000 0000
+                      <p style={{ fontSize: 'var(--fs-xs)', color: 'var(--clr-text-muted)', margin: 0 }}>الهاتف / واتساب</p>
+                      <a href="tel:07752550255" style={{ fontSize: 'var(--fs-sm)', color: 'var(--clr-text)', display: 'block', fontWeight: 700, textDecoration: 'none', direction: 'ltr' }}>
+                        07752550255
+                      </a>
+                      <a href="https://wa.me/9647752550255" target="_blank" rel="noopener noreferrer" style={{ fontSize: 'var(--fs-xs)', color: '#25d366', display: 'block', fontWeight: 600, textDecoration: 'none', marginTop: 2 }}>
+                        واتساب ←
                       </a>
                     </div>
                   </div>
