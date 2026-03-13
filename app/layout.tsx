@@ -3,6 +3,7 @@ import './globals.css';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { ScrollReveal } from '@/components/ScrollReveal';
+import { NavigationEvents } from '@/components/NavigationEvents';
 
 export const metadata: Metadata = {
   title: 'Food Rescue Hub | منصة إنقاذ الطعام',
@@ -27,6 +28,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       </head>
       <body>
         <Header />
+        <NavigationEvents />
         <main>{children}</main>
         <Footer />
         <ScrollReveal />

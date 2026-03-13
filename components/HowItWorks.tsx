@@ -1,5 +1,8 @@
+'use client';
+
 import { ClipboardList, Truck, Star, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 
 const steps = [
   {
@@ -28,11 +31,23 @@ const steps = [
   },
 ];
 
+const cardIn = {
+  hidden: { opacity: 0, y: 40, scale: 0.95 },
+  show:   { opacity: 1, y: 0,  scale: 1 },
+};
+
 export function HowItWorks() {
   return (
     <section className="hiw-section">
       <div className="container">
-        <div style={{ textAlign: 'center', marginBottom: 'var(--sp-14)' }} data-reveal>
+
+        <motion.div
+          style={{ textAlign: 'center', marginBottom: 'var(--sp-14)' }}
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+        >
           <div className="section-label">
             <span>⚡</span>
             كيف يعمل النظام
@@ -46,14 +61,26 @@ export function HowItWorks() {
           <p className="section-desc section-desc-center">
             من لحظة تسجيل الفائض حتى وصوله للمستفيد — النظام يدير كل شيء بشكل آلي وشفاف.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="hiw-grid">
+        <motion.div
+          className="hiw-grid"
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: '-40px' }}
+          variants={{ hidden: {}, show: { transition: { staggerChildren: 0.13 } } }}
+        >
           <div className="hiw-connector" />
-          {steps.map((s, i) => {
+          {steps.map((s) => {
             const Icon = s.icon;
             return (
-              <div className="hiw-step" key={s.step} data-reveal data-reveal-delay={String(i + 1)}>
+              <motion.div
+                className="hiw-step"
+                key={s.step}
+                variants={cardIn}
+                whileHover={{ y: -8, boxShadow: `0 24px 60px rgba(0,0,0,0.5), 0 0 30px ${s.glow}` }}
+                transition={{ duration: 0.22 }}
+              >
                 <div
                   className="hiw-step-number"
                   style={{
@@ -65,33 +92,35 @@ export function HowItWorks() {
                 >
                   {s.step}
                 </div>
-                <div
-                  style={{
-                    width: 52, height: 52,
-                    borderRadius: 'var(--r-lg)',
-                    background: s.glow,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    margin: '0 auto var(--sp-5)',
-                    color: s.color,
-                  }}
-                >
+                <div style={{
+                  width: 52, height: 52,
+                  borderRadius: 'var(--r-lg)',
+                  background: s.glow,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  margin: '0 auto var(--sp-5)',
+                  color: s.color,
+                }}>
                   <Icon size={24} />
                 </div>
                 <h3>{s.title}</h3>
                 <p>{s.desc}</p>
-              </div>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
 
-        <div style={{ textAlign: 'center', marginTop: 'var(--sp-10)' }} data-reveal>
+        <motion.div
+          style={{ textAlign: 'center', marginTop: 'var(--sp-10)' }}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-30px' }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+        >
           <Link href="/donate" className="btn btn-primary btn-xl">
             ابدأ الآن مجانًا
             <ArrowLeft size={20} />
           </Link>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

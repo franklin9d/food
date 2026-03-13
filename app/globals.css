@@ -2353,3 +2353,398 @@ input, textarea, select { font-family: inherit; }
 @media (max-width: 600px) {
   .food-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   GLASSMORPHISM HEADER ENHANCEMENT
+═══════════════════════════════════════════════════════════════ */
+.site-header.scrolled {
+  background: rgba(2, 4, 9, 0.78) !important;
+  backdrop-filter: blur(32px) saturate(200%) brightness(1.1) !important;
+  -webkit-backdrop-filter: blur(32px) saturate(200%) brightness(1.1) !important;
+  border-bottom: 1px solid rgba(255,255,255,0.07) !important;
+  box-shadow: 0 4px 40px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.04) !important;
+}
+
+/* Nav active animated underline (Framer Motion layoutId) */
+.nav-links a {
+  position: relative;
+}
+.nav-active-underline {
+  position: absolute;
+  bottom: -2px;
+  left: 8px;
+  right: 8px;
+  height: 2px;
+  background: var(--grad-primary);
+  border-radius: var(--r-full);
+  box-shadow: 0 0 8px rgba(249,115,22,0.5);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   LIVE BADGE DOT (shared)
+═══════════════════════════════════════════════════════════════ */
+.live-badge-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--clr-accent);
+  animation: dotBlink 1.5s ease infinite;
+  display: inline-block;
+  box-shadow: 0 0 6px rgba(34,197,94,0.6);
+  flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DONORS SECTION — PREMIUM BENTO REDESIGN
+═══════════════════════════════════════════════════════════════ */
+.donors-section {
+  padding: var(--sp-24) 0;
+}
+
+.donors-section-head {
+  text-align: center;
+  margin-bottom: var(--sp-14);
+}
+.donors-section-head .section-label {
+  justify-content: center;
+}
+
+/* Bento grid container */
+.donors-bento {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: var(--sp-6);
+}
+
+/* Glassmorphism base card */
+.donors-glass-card {
+  background: rgba(11, 19, 36, 0.82);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: var(--r-2xl);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  box-shadow: var(--shadow-card), inset 0 1px 0 rgba(255,255,255,0.05);
+  overflow: hidden;
+  transition: border-color var(--dur-base) var(--ease), box-shadow var(--dur-base) var(--ease);
+}
+.donors-glass-card:hover {
+  border-color: rgba(249,115,22,0.18);
+  box-shadow: var(--shadow-lg), 0 0 40px rgba(249,115,22,0.05), inset 0 1px 0 rgba(255,255,255,0.08);
+}
+
+/* Leaderboard occupies full left column */
+.donors-leaderboard {
+  grid-column: 1;
+  grid-row: 1;
+}
+/* Recent activity occupies full right column */
+.donors-recent {
+  grid-column: 2;
+  grid-row: 1;
+}
+/* Mini cards span both columns */
+.donors-mini-row {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--sp-5);
+}
+
+/* Card header */
+.donors-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--sp-5) var(--sp-6);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.donors-card-title {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-family: var(--font-display);
+  font-size: var(--fs-md);
+  font-weight: 800;
+  color: var(--clr-text);
+}
+.donors-title-icon {
+  font-size: 20px;
+}
+
+/* ── Donor row (leaderboard) ── */
+.donor-bento-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: var(--sp-4) var(--sp-6);
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  border-radius: 0;
+  cursor: default;
+  transition: background var(--dur-fast), transform var(--dur-fast);
+}
+.donor-bento-row:last-child {
+  border-bottom: none;
+}
+
+.donor-bento-rank {
+  font-family: var(--font-display);
+  font-size: var(--fs-md);
+  font-weight: 900;
+  width: 36px;
+  text-align: center;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.donor-bento-avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: rgba(249,115,22,0.07);
+  border: 1.5px solid rgba(249,115,22,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+  overflow: hidden;
+  transition: border-color var(--dur-fast);
+}
+.donor-bento-row:hover .donor-bento-avatar {
+  border-color: rgba(249,115,22,0.3);
+}
+
+.donor-bento-info {
+  flex: 1;
+  min-width: 0;
+}
+.donor-bento-info strong {
+  display: block;
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--clr-text);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.donor-bento-info span {
+  font-size: var(--fs-xs);
+  color: var(--clr-text-3);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+.donor-bento-amount {
+  text-align: end;
+  flex-shrink: 0;
+}
+.donor-bento-amount strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: var(--fs-md);
+  font-weight: 900;
+  line-height: 1.1;
+}
+.donor-bento-amount span {
+  font-size: var(--fs-xs);
+  color: var(--clr-text-muted);
+}
+
+/* ── Activity row (recent donations) ── */
+.activity-bento-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: var(--sp-4) var(--sp-6);
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  transition: background var(--dur-fast);
+}
+.activity-bento-row:last-child {
+  border-bottom: none;
+}
+
+.activity-bento-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-md);
+  background: rgba(249,115,22,0.07);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.activity-bento-info {
+  flex: 1;
+  min-width: 0;
+}
+.activity-bento-info strong {
+  display: block;
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--clr-text);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.activity-bento-info span {
+  font-size: var(--fs-xs);
+  color: var(--clr-text-3);
+}
+
+.activity-bento-meta {
+  text-align: end;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+.activity-time {
+  font-size: var(--fs-xs);
+  color: var(--clr-text-muted);
+}
+
+/* ── Mini stat cards ── */
+.donors-mini-card {
+  position: relative;
+  background: rgba(11,19,36,0.75);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: var(--r-xl);
+  padding: var(--sp-6) var(--sp-5);
+  text-align: center;
+  backdrop-filter: blur(20px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+  cursor: default;
+  transition: border-color var(--dur-base) var(--ease), box-shadow var(--dur-base) var(--ease);
+}
+.donors-mini-card:hover {
+  border-color: rgba(var(--accent), 0.3);
+}
+.donors-mini-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--dur-base);
+}
+.donors-mini-card:hover .donors-mini-glow {
+  opacity: 1;
+}
+.donors-mini-emoji {
+  font-size: 28px;
+  line-height: 1;
+  display: block;
+  margin-bottom: var(--sp-1);
+}
+.donors-mini-value {
+  display: block;
+  font-family: var(--font-display);
+  font-size: var(--fs-xl);
+  font-weight: 900;
+  line-height: 1.1;
+}
+.donors-mini-label {
+  font-size: var(--fs-xs);
+  color: var(--clr-text-3);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+/* ── CTA Banner ── */
+.donors-cta-banner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-6);
+  margin-top: var(--sp-8);
+  padding: var(--sp-7) var(--sp-10);
+  background: rgba(249,115,22,0.05);
+  border: 1px solid rgba(249,115,22,0.14);
+  border-radius: var(--r-2xl);
+  backdrop-filter: blur(20px);
+  overflow: hidden;
+  flex-wrap: wrap;
+}
+.donors-cta-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 50%, rgba(249,115,22,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+.donors-cta-content {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  position: relative;
+  z-index: 1;
+}
+.donors-cta-content p {
+  font-size: var(--fs-md);
+  color: var(--clr-text-2);
+  line-height: 1.6;
+}
+
+/* ── Responsive donors ── */
+@media (max-width: 1024px) {
+  .donors-bento {
+    grid-template-columns: 1fr;
+  }
+  .donors-leaderboard { grid-column: 1; grid-row: auto; }
+  .donors-recent      { grid-column: 1; grid-row: auto; }
+  .donors-mini-row    { grid-column: 1; grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 680px) {
+  .donors-mini-row { grid-template-columns: 1fr 1fr; }
+  .donors-cta-banner {
+    flex-direction: column;
+    text-align: center;
+    padding: var(--sp-7) var(--sp-5);
+  }
+  .donors-cta-content { justify-content: center; }
+  .donors-cta-banner .btn { width: 100%; justify-content: center; }
+}
+
+@media (max-width: 480px) {
+  .donors-mini-row { grid-template-columns: 1fr 1fr; gap: var(--sp-3); }
+  .donor-bento-row,
+  .activity-bento-row {
+    padding: var(--sp-3) var(--sp-4);
+  }
+  .donors-card-header {
+    padding: var(--sp-4) var(--sp-4);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FRAMER MOTION — GLASS CARDS & HOVER STATES
+═══════════════════════════════════════════════════════════════ */
+/* Ensure Framer Motion whileHover doesn't break layout */
+.bento-card,
+.metric-card,
+.story-card,
+.hiw-step {
+  will-change: transform;
+}
+
+/* Soft inner highlight on cards */
+.donors-glass-card::before,
+.donors-mini-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+  pointer-events: none;
+}
+

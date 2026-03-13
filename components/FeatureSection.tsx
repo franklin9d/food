@@ -1,4 +1,7 @@
+'use client';
+
 import { Zap, MapPin, BarChart3, Shield, Users, Leaf } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const bentoItems = [
   {
@@ -10,7 +13,7 @@ const bentoItems = [
     desc: 'المطاعم والمخابز والفنادق يضيفون الفائض خلال أقل من دقيقة مع تحديد الكمية ووقت الجاهزية ونوع الطعام.',
     stats: [
       { value: '< 60ث', label: 'وقت التسجيل' },
-      { value: '97%', label: 'نسبة النجاح' },
+      { value: '97%',   label: 'نسبة النجاح'  },
     ],
     large: true,
   },
@@ -50,11 +53,26 @@ const bentoItems = [
   },
 ];
 
+const cardVariant = {
+  hidden: { opacity: 0, y: 40, scale: 0.96 },
+  show:   {
+    opacity: 1, y: 0, scale: 1,
+  },
+};
+
 export function FeatureSection() {
   return (
     <section className="features-section section-spacing">
       <div className="container">
-        <div className="features-section-header" data-reveal>
+
+        {/* Header */}
+        <motion.div
+          className="features-section-header"
+          initial={{ opacity: 0, y: 28 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+        >
           <div className="section-label">
             <Leaf size={14} />
             لماذا Food Rescue Hub
@@ -64,21 +82,28 @@ export function FeatureSection() {
             <br />
             <span className="gradient-text">والأثر الحقيقي</span>
           </h2>
-          <div className="glow-divider" />
           <p className="section-desc section-desc-center">
             تقنيات متقدمة وتجربة مستخدم احترافية لإنقاذ أكبر قدر ممكن من الطعام.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="features-bento">
-          {bentoItems.map((item, i) => {
+        {/* Bento grid — staggered */}
+        <motion.div
+          className="features-bento"
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: '-40px' }}
+          variants={{ hidden: {}, show: { transition: { staggerChildren: 0.1 } } }}
+        >
+          {bentoItems.map((item) => {
             const Icon = item.icon;
             return (
-              <div
+              <motion.div
                 key={item.title}
                 className={`bento-card ${item.col} ${item.large ? 'bento-card-large' : ''}`}
-                data-reveal
-                data-reveal-delay={String(i + 1)}
+                variants={cardVariant}
+                whileHover={{ y: -6, boxShadow: '0 24px 60px rgba(0,0,0,0.5), 0 0 40px rgba(249,115,22,0.08)' }}
+                transition={{ duration: 0.25 }}
               >
                 <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 'var(--sp-4)' }}>
                   <div className={`bento-icon ${item.iconClass}`}>
@@ -119,10 +144,10 @@ export function FeatureSection() {
                     </div>
                   </>
                 )}
-              </div>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

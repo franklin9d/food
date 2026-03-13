@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import { useEffect, useState, useCallback } from 'react';
-import { ArrowLeft, Play, TrendingUp, Users, Package, Heart, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Play, ChevronLeft, ChevronRight } from 'lucide-react';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { stats } from '@/lib/data';
 
 const slides = [
@@ -27,16 +28,37 @@ const slides = [
 ];
 
 const liveItems = [
-  { icon: '🍱', title: 'مطعم البيت الدمشقي', subtitle: '45 وجبة · المنصور', badge: 'جاهز', badgeClass: 'status-done' },
-  { icon: '🥖', title: 'مخبز السنابل', subtitle: '80 قطعة · الكرادة', badge: 'قيد التوزيع', badgeClass: 'status-active' },
-  { icon: '🍽️', title: 'قاعة ليلك', subtitle: '60 وجبة · الجادرية', badge: 'تم التسليم', badgeClass: 'status-done' },
+  { icon: '🍱', title: 'مطعم البيت الدمشقي', subtitle: '45 وجبة · المنصور',   badge: 'جاهز',          badgeClass: 'status-done'   },
+  { icon: '🥖', title: 'مخبز السنابل',        subtitle: '80 قطعة · الكرادة',   badge: 'قيد التوزيع',   badgeClass: 'status-active' },
+  { icon: '🍽️', title: 'قاعة ليلك',          subtitle: '60 وجبة · الجادرية',  badge: 'تم التسليم',    badgeClass: 'status-done'   },
 ];
 
-const statIcons = [TrendingUp, Package, Users, Heart];
+/* ─── Stagger variants ─── */
+const heroTextContainer = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.12, delayChildren: 0.2 } },
+};
+const heroTextItem = {
+  hidden: { opacity: 0, y: 40 },
+  show:   { opacity: 1, y: 0 },
+};
+const visualSegments = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.14, delayChildren: 0.3 } },
+};
+const segItem = {
+  hidden: { opacity: 0, y: 50, scale: 0.95 },
+  show:   { opacity: 1, y: 0,  scale: 1 },
+};
 
 export function Hero() {
   const [current, setCurrent] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+
+  // Parallax on scroll
+  const { scrollY } = useScroll();
+  const bgY      = useTransform(scrollY, [0, 600], [0, 120]);
+  const contentY = useTransform(scrollY, [0, 600], [0, -40]);
 
   const goTo = useCallback((idx: number) => {
     if (isAnimating) return;
@@ -55,48 +77,71 @@ export function Hero() {
 
   return (
     <section className="hero-section">
-      {/* Background slider */}
-      <div className="hero-slider-bg">
-        {slides.map((slide, i) => (
-          <div
-            key={i}
-            className={`hero-slide-bg ${i === current ? 'active' : ''}`}
-            style={{ backgroundImage: `url(${slide.bg})` }}
+      {/* ── Parallax background slider ── */}
+      <motion.div className="hero-slider-bg" style={{ y: bgY }}>
+        <AnimatePresence initial={false}>
+          <motion.div
+            key={current}
+            className="hero-slide-bg active"
+            style={{ backgroundImage: `url(${slides[current].bg})` }}
+            initial={{ opacity: 0, scale: 1.12 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.4, ease: 'easeInOut' }}
           />
-        ))}
+        </AnimatePresence>
         <div className="hero-overlay" />
         <div className="hero-noise" />
-        {/* Site background orbs */}
         <div className="site-orb site-orb-1" />
         <div className="site-orb site-orb-2" />
         <div className="site-orb site-orb-3" />
         <div className="site-grid-overlay" />
-      </div>
+      </motion.div>
 
-      <div className="hero-content">
+      {/* ── Content ── */}
+      <motion.div className="hero-content" style={{ y: contentY }}>
         <div className="container">
           <div className="hero-grid">
 
-            {/* Left / Text */}
-            <div>
-              <div className="eyebrow-badge" data-reveal>
+            {/* ── Left / Text — staggered entrance ── */}
+            <motion.div variants={heroTextContainer} initial="hidden" animate="show">
+
+              <motion.div className="eyebrow-badge" variants={heroTextItem}>
                 <span className="live-dot" />
                 ابتكار مجتمعي · تقليل الهدر · أثر قابل للقياس
-              </div>
+              </motion.div>
 
-              <h1 className="hero-title" data-reveal data-reveal-delay="1">
-                {slides[current].title}
-                <br />
-                <span className="gradient-text">{slides[current].subtitle}</span>
-                <br />
-                يصل للمحتاجين
-              </h1>
+              <AnimatePresence mode="wait">
+                <motion.h1
+                  key={current}
+                  className="hero-title"
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.55, ease: "easeOut" }}
+                >
+                  {slides[current].title}
+                  <br />
+                  <span className="gradient-text">{slides[current].subtitle}</span>
+                  <br />
+                  يصل للمحتاجين
+                </motion.h1>
+              </AnimatePresence>
 
-              <p className="hero-desc" data-reveal data-reveal-delay="2">
-                {slides[current].desc}
-              </p>
+              <AnimatePresence mode="wait">
+                <motion.p
+                  key={`desc-${current}`}
+                  className="hero-desc"
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.5, ease: "easeOut" }}
+                >
+                  {slides[current].desc}
+                </motion.p>
+              </AnimatePresence>
 
-              <div className="hero-actions" data-reveal data-reveal-delay="3">
+              <motion.div className="hero-actions" variants={heroTextItem}>
                 <Link href="/donate" className="btn btn-primary btn-xl">
                   ابدأ التبرع الآن
                   <ArrowLeft size={20} />
@@ -105,108 +150,125 @@ export function Hero() {
                   <Play size={18} />
                   شاهد لوحة الأثر
                 </Link>
-              </div>
+              </motion.div>
 
               {/* Slider controls */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-4)', marginBottom: 'var(--sp-8)' }} data-reveal data-reveal-delay="3">
-                <button onClick={prev} className="btn btn-secondary btn-icon" aria-label="السابق" style={{ borderRadius: 'var(--r-full)', width: '44px', height: '44px', flexShrink: 0 }}>
+              <motion.div
+                style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-4)', marginBottom: 'var(--sp-8)' }}
+                variants={heroTextItem}
+              >
+                <motion.button
+                  onClick={prev}
+                  className="btn btn-secondary btn-icon"
+                  aria-label="السابق"
+                  style={{ borderRadius: 'var(--r-full)', width: '44px', height: '44px', flexShrink: 0 }}
+                  whileTap={{ scale: 0.9 }}
+                  whileHover={{ scale: 1.08 }}
+                >
                   <ChevronRight size={18} />
-                </button>
+                </motion.button>
                 <div className="hero-slider-nav" style={{ position: 'static', transform: 'none', display: 'flex', gap: 'var(--sp-2)' }}>
                   {slides.map((_, i) => (
-                    <button
+                    <motion.button
                       key={i}
                       className={`slider-dot ${i === current ? 'active' : ''}`}
                       onClick={() => goTo(i)}
                       aria-label={`الشريحة ${i + 1}`}
+                      whileTap={{ scale: 0.85 }}
                     />
                   ))}
                 </div>
-                <button onClick={next} className="btn btn-secondary btn-icon" aria-label="التالي" style={{ borderRadius: 'var(--r-full)', width: '44px', height: '44px', flexShrink: 0 }}>
+                <motion.button
+                  onClick={next}
+                  className="btn btn-secondary btn-icon"
+                  aria-label="التالي"
+                  style={{ borderRadius: 'var(--r-full)', width: '44px', height: '44px', flexShrink: 0 }}
+                  whileTap={{ scale: 0.9 }}
+                  whileHover={{ scale: 1.08 }}
+                >
                   <ChevronLeft size={18} />
-                </button>
-              </div>
+                </motion.button>
+              </motion.div>
 
-              {/* Stats */}
-              <div className="hero-stats" data-reveal data-reveal-delay="4">
-                {stats.map((item, i) => {
-                  const Icon = statIcons[i] ?? TrendingUp;
-                  return (
-                    <div className="hero-stat" key={item.label}>
-                      <strong>{item.value}</strong>
-                      <span>{item.label}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+              {/* Stats — staggered */}
+              <motion.div className="hero-stats" variants={heroTextItem}>
+                {stats.map((item) => (
+                  <div className="hero-stat" key={item.label}>
+                    <strong>{item.value}</strong>
+                    <span>{item.label}</span>
+                  </div>
+                ))}
+              </motion.div>
+            </motion.div>
 
-            {/* Right / Visual */}
-            <div className="hero-visual" data-reveal data-reveal-delay="2">
+            {/* ── Right / Segmented visual ── */}
+            <motion.div
+              className="hero-visual"
+              variants={visualSegments}
+              initial="hidden"
+              animate="show"
+            >
               <div className="hero-visual-inner">
 
-                {/* Floating top card */}
-                <div className="float-card float-card-top">
+                {/* Segment 1 — floating top card */}
+                <motion.div className="float-card float-card-top" variants={segItem}>
                   <div className="float-card-status" style={{ color: '#4ade80' }}>
                     <span className="dot dot-green" />
                     تحديث مباشر
                   </div>
                   <strong>18 طلب جاهز للاستلام</strong>
                   <p>أقرب متطوع يبعد 7 دقائق</p>
-                </div>
+                </motion.div>
 
-                {/* Main card */}
-                <div className="hero-card-main">
+                {/* Segment 2 — main panel */}
+                <motion.div className="hero-card-main" variants={segItem}>
                   <div className="live-panel">
                     <div className="live-panel-header">
                       <span style={{ fontWeight: 800, fontSize: 'var(--fs-sm)', color: 'var(--clr-text)' }}>
                         آخر التبرعات
                       </span>
                       <span className="live-badge">
-                        <span
-                          style={{
-                            width: 7, height: 7,
-                            borderRadius: '50%',
-                            background: 'var(--clr-accent)',
-                            animation: 'dotBlink 1.5s ease infinite',
-                            display: 'inline-block',
-                            boxShadow: '0 0 6px rgba(34,197,94,0.6)',
-                          }}
-                        />
+                        <span className="live-badge-dot" />
                         مباشر
                       </span>
                     </div>
                     <div className="live-items">
-                      {liveItems.map((item) => (
-                        <div className="live-item" key={item.title}>
+                      {liveItems.map((item, i) => (
+                        <motion.div
+                          className="live-item"
+                          key={item.title}
+                          initial={{ opacity: 0, x: 20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.6 + i * 0.12, duration: 0.45, ease: "easeOut" }}
+                        >
                           <div className="live-item-icon">{item.icon}</div>
                           <div className="live-item-text">
                             <strong>{item.title}</strong>
                             <span>{item.subtitle}</span>
                           </div>
                           <span className={`status-badge ${item.badgeClass}`}>{item.badge}</span>
-                        </div>
+                        </motion.div>
                       ))}
                     </div>
                   </div>
-                </div>
+                </motion.div>
 
-                {/* Floating bottom card */}
-                <div className="float-card float-card-bottom">
+                {/* Segment 3 — floating bottom card */}
+                <motion.div className="float-card float-card-bottom" variants={segItem}>
                   <div className="float-card-status" style={{ color: 'var(--clr-primary-2)' }}>
                     <span className="dot dot-orange" />
                     إجمالي الأثر
                   </div>
                   <strong>1.9 طن طعام منقذ</strong>
                   <p>هذا الشهر من 31 جهة شريكة</p>
-                </div>
+                </motion.div>
 
               </div>
-            </div>
+            </motion.div>
 
           </div>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }

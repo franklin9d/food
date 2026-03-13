@@ -1,20 +1,35 @@
+'use client';
+
 import { TrendingUp, Package, Users, Heart } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { stats, impactStories } from '@/lib/data';
 
-const icons = [TrendingUp, Package, Users, Heart];
+const icons  = [TrendingUp, Package, Users, Heart];
 const colors = [
   { from: '#f97316', to: '#fb923c', glow: 'rgba(249,115,22,0.15)' },
-  { from: '#22c55e', to: '#4ade80', glow: 'rgba(34,197,94,0.12)' },
+  { from: '#22c55e', to: '#4ade80', glow: 'rgba(34,197,94,0.12)'  },
   { from: '#3b82f6', to: '#60a5fa', glow: 'rgba(59,130,246,0.12)' },
   { from: '#8b5cf6', to: '#a78bfa', glow: 'rgba(139,92,246,0.12)' },
 ];
+
+const cardIn = {
+  hidden: { opacity: 0, y: 36, scale: 0.95 },
+  show:   { opacity: 1, y: 0,  scale: 1 },
+};
 
 export function ImpactSection() {
   return (
     <section className="impact-section">
       <div className="container">
 
-        <div style={{ textAlign: 'center', marginBottom: 'var(--sp-14)', position: 'relative', zIndex: 1 }} data-reveal>
+        {/* Header */}
+        <motion.div
+          style={{ textAlign: 'center', marginBottom: 'var(--sp-14)', position: 'relative', zIndex: 1 }}
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+        >
           <div className="section-label">
             <span>🌟</span>
             أثرنا بالأرقام
@@ -24,23 +39,28 @@ export function ImpactSection() {
             <br />
             <span className="gradient-text">وجبة وصلت لمستحقها</span>
           </h2>
-          <div className="glow-divider" />
-        </div>
+        </motion.div>
 
-        {/* Metrics */}
-        <div className="impact-metrics">
+        {/* Metrics — staggered */}
+        <motion.div
+          className="impact-metrics"
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: '-40px' }}
+          variants={{ hidden: {}, show: { transition: { staggerChildren: 0.1 } } }}
+        >
           {stats.map((item, i) => {
             const Icon = icons[i] ?? TrendingUp;
-            const c = colors[i];
+            const c    = colors[i];
             return (
-              <div className="metric-card" key={item.label} data-reveal data-reveal-delay={String(i + 1)}>
-                <div
-                  className="metric-icon"
-                  style={{
-                    background: c.glow,
-                    color: c.from,
-                  }}
-                >
+              <motion.div
+                className="metric-card"
+                key={item.label}
+                variants={cardIn}
+                whileHover={{ y: -6, boxShadow: `0 20px 60px rgba(0,0,0,0.5), 0 0 30px ${c.glow}` }}
+                transition={{ duration: 0.22 }}
+              >
+                <div className="metric-icon" style={{ background: c.glow, color: c.from }}>
                   <Icon size={24} />
                 </div>
                 <div
@@ -51,51 +71,51 @@ export function ImpactSection() {
                 </div>
                 <div className="metric-label">{item.label}</div>
                 <div className="metric-note">↑ مقياس هذا الشهر</div>
-              </div>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
 
-        {/* Stories */}
-        <div
-          style={{
-            textAlign: 'center',
-            margin: 'var(--sp-16) 0 var(--sp-8)',
-            position: 'relative',
-            zIndex: 1,
-          }}
-          data-reveal
+        {/* Stories subheader */}
+        <motion.div
+          style={{ textAlign: 'center', margin: 'var(--sp-16) 0 var(--sp-8)', position: 'relative', zIndex: 1 }}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-40px' }}
+          transition={{ duration: 0.65, ease: "easeOut" }}
         >
-          <h3 style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: 'var(--fs-2xl)',
-            fontWeight: 900,
-            color: 'var(--clr-text)',
-            marginBottom: 'var(--sp-2)',
-          }}>
+          <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--fs-2xl)', fontWeight: 900, color: 'var(--clr-text)', marginBottom: 'var(--sp-2)' }}>
             قصص من الميدان
           </h3>
           <p style={{ color: 'var(--clr-text-3)', fontSize: 'var(--fs-sm)' }}>
             تجارب حقيقية شكّلها الفريق والمتطوعون
           </p>
-        </div>
+        </motion.div>
 
-        <div className="impact-stories">
+        {/* Stories — staggered slide-up */}
+        <motion.div
+          className="impact-stories"
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: '-30px' }}
+          variants={{ hidden: {}, show: { transition: { staggerChildren: 0.12 } } }}
+        >
           {impactStories.map((story, i) => (
-            <div className="story-card" key={story.title} data-reveal data-reveal-delay={String(i + 1)}>
-              <div
-                style={{
-                  fontSize: 36,
-                  marginBottom: 'var(--sp-4)',
-                }}
-              >
+            <motion.div
+              className="story-card"
+              key={story.title}
+              variants={cardIn}
+              whileHover={{ y: -6, borderColor: 'rgba(249,115,22,0.22)' }}
+              transition={{ duration: 0.22 }}
+            >
+              <div style={{ fontSize: 36, marginBottom: 'var(--sp-4)' }}>
                 {['🍞', '🎉', '⚡'][i]}
               </div>
               <h4>{story.title}</h4>
               <p>{story.text}</p>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
       </div>
     </section>
