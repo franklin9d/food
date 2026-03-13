@@ -58,12 +58,12 @@ export const impactStories = [
 ];
 
 export const navLinks = [
-  { href: '/', label: 'الرئيسية' },
-  { href: '/donate', label: 'تبرع بالفائض' },
-  { href: '/request', label: 'طلب استلام' },
-  { href: '/dashboard', label: 'لوحة الأثر' },
-  { href: '/about', label: 'عن المشروع' },
-  { href: '/contact', label: 'تواصل' },
+  { href: '/',          label: 'الرئيسية',    icon: '🏠' },
+  { href: '/donate',    label: 'تبرع بالفائض', icon: '🍱' },
+  { href: '/request',   label: 'طلب استلام',   icon: '🚚' },
+  { href: '/dashboard', label: 'لوحة الأثر',   icon: '📊' },
+  { href: '/about',     label: 'عن المشروع',   icon: '💡' },
+  { href: '/contact',   label: 'تواصل',        icon: '📬' },
 ];
 
 export const dashboardMetrics = [
